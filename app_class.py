@@ -1,6 +1,6 @@
 import pygame, sys
 from settings import *
-
+from player_class import *
 
 pygame.init()
 vec = pygame.math.Vector2
@@ -12,6 +12,11 @@ class App:
     self.clock = pygame.time.Clock()
     self.running = True
     self.state = 'start'
+    self.cell_width = MAZE_WIDTH//28
+    self.cell_height = MAZE_HEIGHT//30
+    self.player = Player(self,PLAYER_START_POS)
+
+    self.load()
 
   def run(self):
     while self.running:
@@ -40,6 +45,15 @@ class App:
       pos[1] = pos[1]-text_size[1]//2
     screen.blit(text, pos)
 
+  def load(self):
+    self.background = pygame.image.load('img/bg.jpg')
+    self.background = pygame.transform.scale(self.background, (MAZE_WIDTH, MAZE_HEIGHT))
+
+  def draw_grid(self):
+    for x in range(HEIGHT//self.cell_height):
+      pygame.draw.line(self.background, GREY, (x*self.cell_width, 0), (x*self.cell_width, HEIGHT))
+    for x in range(WIDTH//self.cell_width):
+      pygame.draw.line(self.background, GREY, (0, x*self.cell_height), (WIDTH, x*self.cell_height))
 
 #@========================================START FUNCTIONS=========================================
   def start_events(self):
@@ -54,11 +68,11 @@ class App:
 
   def start_draw(self):
     self.screen.fill(BLACK)
-    self.draw_text('HIGH SCORE', self.screen, [5, 2], START_TEXT_SIZE, (255,255,255), START_FONT)
-    self.draw_text('PAC-MAN', self.screen, [WIDTH//2, HEIGHT//2 - 150], TITLE_TEXT_SIZE, (255,255,0), START_FONT,centered=True)
-    self.draw_text('PUSH SPACE TO START', self.screen, [WIDTH//2, HEIGHT//2], START_TEXT_SIZE, (252, 141, 104), START_FONT, centered=True)
-    self.draw_text('1 PLAYER GAME', self.screen, [WIDTH//2, HEIGHT//2+75], START_TEXT_SIZE, (0,255,255), START_FONT, centered=True)
-    self.draw_text('© Games By Kara', self.screen, [WIDTH//2, HEIGHT//2+250], START_TEXT_SIZE, (216,191,216), START_FONT, centered=True)
+    self.draw_text('HIGH SCORE', self.screen, [5, 2], START_TEXT_SIZE, WHITE, START_FONT)
+    self.draw_text('PAC-MAN', self.screen, [WIDTH//2, HEIGHT//2 - 150], TITLE_TEXT_SIZE, YELLOW, START_FONT, centered=True)
+    self.draw_text('PUSH SPACE TO START', self.screen, [WIDTH//2, HEIGHT//2], START_TEXT_SIZE, CLYDE, START_FONT, centered=True)
+    self.draw_text('1 PLAYER GAME', self.screen, [WIDTH//2, HEIGHT//2+75], START_TEXT_SIZE, INKY, START_FONT, centered=True)
+    self.draw_text('Games By Kara', self.screen, [WIDTH//2, HEIGHT//2+250], START_TEXT_SIZE, PINKY, START_FONT, centered=True)
     pygame.display.update()
 
 
@@ -73,5 +87,10 @@ class App:
     pass
 
   def playing_draw(self):
-    self.screen.fill(RED)
+    self.screen.fill(BLACK)
+    self.screen.blit(self.background, (TOP_BOTTOM_BUFFER//2,TOP_BOTTOM_BUFFER//2))
+    self.draw_grid()
+    self.draw_text('MY SCORE : 0', self.screen, [40,5], 16, WHITE, START_FONT)
+    self.draw_text('0 : HIGH SCORE ', self.screen, [WIDTH//2 + 100 ,5], 16, WHITE, START_FONT)
+    self.player.draw()
     pygame.display.update()
