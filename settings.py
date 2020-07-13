@@ -24,4 +24,5 @@ START_FONT = "Orbitron"
 
 #player settings
 PLAYER_START_POS = vec(14,23)
+
 #enemy settings
